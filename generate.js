@@ -1,13 +1,23 @@
-const fs = require('fs').promises;
+const fs = require('fs');
+const fsPromises = fs.promises;
 const https = require('https');
 
-const dataJSON = fs.readFile('./data.json').then(buf => JSON.parse(buf));
-const allCountriesJSON = fs
+const dataJSON = fsPromises
+  .readFile('./data.json')
+  .then(buf => JSON.parse(buf));
+const allCountriesJSON = fsPromises
   .readFile('./vendor/countries.geojson')
   .then(buf => JSON.parse(buf));
-const citiesJSON = fs
-  .readFile('./dist/cities.geojson')
-  .then(buf => JSON.parse(buf));
+const citiesJSON = fsPromises
+  .access('./dist/cities.geojson', fs.constants.F_OK)
+  .then(() => {
+    return fsPromises
+      .readFile('./dist/cities.geojson')
+      .then(buf => JSON.parse(buf));
+  })
+  .catch(() => {
+    return [];
+  });
 
 Promise.all([dataJSON, allCountriesJSON])
   .then(([data, geojson]) => {
@@ -28,7 +38,7 @@ Promise.all([dataJSON, allCountriesJSON])
     return parse(geojson, 7);
   })
   .then(geojson =>
-    fs.writeFile('./dist/countries.geojson', JSON.stringify(geojson))
+    fsPromises.writeFile('./dist/countries.geojson', JSON.stringify(geojson))
   )
   .then(() => console.log('countries.geojson generated'));
 
@@ -107,7 +117,7 @@ Promise.all([dataJSON, citiesJSON])
     }));
   })
   .then(geojson =>
-    fs.writeFile('./dist/cities.geojson', JSON.stringify(geojson))
+    fsPromises.writeFile('./dist/cities.geojson', JSON.stringify(geojson))
   )
   .then(() => console.log('cities.geojson generated'));
 
