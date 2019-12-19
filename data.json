@@ -1,0 +1,92 @@
+{
+  "RU": {
+    "name": "Russia",
+    "birth": true,
+    "lived": [1990, 2015],
+    "cities": [
+      "Yekaterinburg",
+      "Moscow",
+      "Saint-Petersburg",
+      "Perm",
+      "Gelendzhik",
+      "Chelyabinsk"
+    ]
+  },
+  "VN": {
+    "name": "Vietnam",
+    "lived": [2015, 2017],
+    "cities": [
+      "Ho Chi Minh",
+      "Ha Noi",
+      "Da Nang",
+      "Da Lat",
+      "Nha Trang",
+      "Phan Thiet",
+      "Mui Ne",
+      "Vung Tau"
+    ]
+  },
+  "ES": {
+    "name": "Spain",
+    "years": [2017],
+    "lived": [2017, 2019],
+    "cities": [
+      "Madrid",
+      "Barcelona",
+      "Sevilla",
+      "Cadiz",
+      "Cordoba",
+      "Valencia",
+      "Salou",
+      "Zaragoza",
+      "Segovia",
+      "Toledo",
+      "Avila",
+      "Bilbao",
+      "Santander",
+      "Malaga",
+      "Granada",
+      "Palma de Mallorca",
+      "Santa Cruz de Tenerife",
+      "Puerto de la Cruz",
+      "Los Cristianos"
+    ]
+  },
+  "GB": { "name": "United Kingdom", "cities": ["Cambridge", "London"] },
+  "SG": { "name": "Singapore", "years": [2017], "cities": ["Singapore"] },
+  "HK": { "name": "Hong Kong", "years": [2017], "cities": ["Hong Kong"] },
+  "PT": { "name": "Portugal", "years": [2019], "cities": ["Lisbon", "Sintra"] },
+  "DE": { "name": "Germany", "years": [2019], "cities": ["Berlin"] },
+  "BE": { "name": "Belgium", "years": [2018, 2019], "cities": ["Brussel"] },
+  "US": {
+    "name": "United States",
+    "years": [2011],
+    "cities": [
+      "New York",
+      "Boston",
+      "Orleans, MA",
+      "Provincetown, MA",
+      "Philadelphia",
+      "Baltimore",
+      "Washington, DC",
+      "Richmond, VA",
+      "Charlotte, NC"
+    ]
+  },
+  "IS": { "name": "Iceland", "years": [2018], "cities": ["Reykjavík"] },
+  "BY": { "name": "Belarus", "cities": ["Brest"] },
+  "TR": { "name": "Turkey" },
+  "CY": {
+    "name": "Cyprus",
+    "years": [2014],
+    "cities": ["Larnaca", "Ayia Napa"]
+  },
+  "TH": { "name": "Thailand", "years": [2013], "cities": ["Pattaya"] },
+  "UA": {
+    "name": "Ukraine",
+    "cities": ["Yevpatoriya", "Sudak", "Alushta", "Yalta", "Simferopol"]
+  },
+  "PL": { "name": "Poland" },
+  "HU": { "name": "Hungary" },
+  "BG": { "name": "Bulgaria" }
+}
