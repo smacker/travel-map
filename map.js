@@ -23,8 +23,18 @@
 
   // Data requests
 
-  const countriesPromise = fetch('countries.geojson').then(d => d.json());
-  const citiesPromise = fetch('cities.geojson').then(d => d.json());
+  const countriesPromise = fetch('countries.geojson').then(d => {
+    if (d.status !== 200) {
+      throw `countries.geojson: incorrect status code: ${d.status}`;
+    }
+    return d.json();
+  });
+  const citiesPromise = fetch('cities.geojson').then(d => {
+    if (d.status !== 200) {
+      throw `cities.geojson: incorrect status code: ${d.status}`;
+    }
+    return d.json();
+  });
 
   // Create the map itself
 
