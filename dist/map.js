@@ -168,6 +168,24 @@
           countriesGroupTemplate('Visited', visited)
         ].join('');
 
+        const link = L.DomUtil.create('a');
+        link.href = '#';
+        link.innerHTML = '<h3>List countries</h3>';
+
+        div.appendChild(link);
+
+        const onEventOutsideLink = e => {
+          if (!div.contains(e.target)) {
+            L.DomUtil.removeClass(div, 'show');
+            L.DomEvent.off(document, 'mousedown', onEventOutsideLink);
+          }
+        };
+
+        L.DomEvent.on(link, 'click', () => {
+          L.DomUtil.addClass(div, 'show');
+          L.DomEvent.on(document, 'mousedown', onEventOutsideLink);
+        });
+
         return div;
       };
 
