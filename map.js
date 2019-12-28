@@ -38,11 +38,19 @@
 
   // Create the map itself
 
-  const map = L.map('mapid').setView(initialCoords, 3);
+  const map = L.map('mapid', {
+    center: initialCoords,
+    zoom: 3,
+    maxBounds: [
+      [85, 180],
+      [-85, -180]
+    ]
+  });
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution:
-      '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+      '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+    noWrap: true
   }).addTo(map);
 
   // Helpers
