@@ -53,7 +53,12 @@
     ]
   },
   "GB": { "name": "United Kingdom", "cities": ["Cambridge", "London"] },
-  "SG": { "name": "Singapore", "years": [2017], "cities": ["Singapore"] },
+  "SG": {
+    "name": "Singapore",
+    "years": [2017, 2020],
+    "lived": [2020],
+    "cities": ["Singapore"]
+  },
   "HK": { "name": "Hong Kong", "years": [2017], "cities": ["Hong Kong"] },
   "PT": { "name": "Portugal", "years": [2019], "cities": ["Lisbon", "Sintra"] },
   "DE": { "name": "Germany", "years": [2019], "cities": ["Berlin"] },
