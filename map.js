@@ -117,8 +117,11 @@
           status.push('born');
         }
         if (props.lived) {
-          // todo: support no dates, more than 1 interval
-          status.push(`lived, ${props.lived[0]}-${props.lived[1]}`);
+          if (props.lived.length > 1) {
+            status.push(`lived, ${props.lived[0]}-${props.lived[1]}`);
+          } else {
+            status.push(`lived, ${props.lived[0]}-present`);
+          }
         }
         if (!props.lived) {
           status.push('visited');
