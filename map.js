@@ -156,7 +156,8 @@
         const items = countries.map(
           c => `<li><i style="background:${getColor(c)}"></i> ${c.name}</li>`
         );
-        return `<h4>${name}</h4><ul>${items.join('')}</ul>`;
+        const count = countries.length > 3 ? ` (${countries.length})` : '';
+        return `<h4>${name}${count}</h4><ul>${items.join('')}</ul>`;
       }
 
       const legend = L.control({ position: 'bottomleft' });
