@@ -7,134 +7,135 @@ const allCountriesFile = './vendor/countries.geojson';
 const countriesFile = './dist/countries.geojson';
 const citiesFile = './dist/cities.geojson';
 
-const dataJSON = fsPromises.readFile(dataFile).then(buf => JSON.parse(buf));
+const dataJSON = fsPromises.readFile(dataFile).then((buf) => JSON.parse(buf));
 const allCountriesJSON = fsPromises
   .readFile(allCountriesFile)
-  .then(buf => JSON.parse(buf));
+  .then((buf) => JSON.parse(buf));
 const citiesJSON = fsPromises
   .access(citiesFile, fs.constants.F_OK)
   .then(() => {
-    return fsPromises.readFile(citiesFile).then(buf => JSON.parse(buf));
+    return fsPromises.readFile(citiesFile).then((buf) => JSON.parse(buf));
   })
   .catch(() => {
     return [];
   });
 
-Promise.all([dataJSON, allCountriesJSON])
-  .then(([data, geojson]) => {
-    const codes = Object.keys(data);
+async function generateCountriesGeoJson() {
+  const data = await dataJSON;
+  const geojson = await allCountriesJSON;
 
-    geojson.features = geojson.features
-      .filter(f => codes.includes(f.properties.ISO_A2))
-      .map(f => {
-        const code = f.properties.ISO_A2;
-        f.properties = {
-          ...data[code],
-          code
-        };
-        delete f.properties.cities;
-        return f;
-      });
+  const codes = Object.keys(data);
+  geojson.features = geojson.features
+    .filter((f) => codes.includes(f.properties.ISO_A2))
+    .map((f) => {
+      const code = f.properties.ISO_A2;
+      f.properties = {
+        ...data[code],
+        code,
+      };
+      delete f.properties.cities;
+      return f;
+    });
 
-    return parse(geojson, 7);
-  })
-  .then(geojson => fsPromises.writeFile(countriesFile, JSON.stringify(geojson)))
-  .then(() => console.log('countries.geojson generated'));
+  parse(geojson, 7);
 
-function cityKey(c) {
-  return `${c.name}_${c.country}`;
+  await fsPromises.writeFile(countriesFile, JSON.stringify(geojson));
+  console.log('countries.geojson generated');
 }
 
-Promise.all([dataJSON, citiesJSON])
-  .then(([data, prevCitiesGeoJSON]) => {
-    const codes = Object.keys(data);
-    const allCities = codes
-      .map(code => data[code])
-      .filter(c => c.cities && c.cities.length)
-      .map(c => c.cities.map(city => ({ name: city, country: c.name })))
-      .flat();
+async function generateCitiesGeoJson() {
+  const cityKey = (c) => `${c.name}_${c.country}`;
 
-    const prevCities = prevCitiesGeoJSON.reduce((acc, f) => {
-      const c = f.properties;
-      acc[cityKey(c)] = f.geometry.coordinates;
-      return acc;
-    }, {});
+  const data = await dataJSON;
+  const prevCitiesGeoJSON = await citiesJSON;
 
-    // get coordinates from previous geojson
-    const oldCities = allCities
-      .filter(c => prevCities.hasOwnProperty(cityKey(c)))
-      .map(c => {
-        c.coordinates = prevCities[cityKey(c)];
-        return c;
-      });
+  const codes = Object.keys(data);
+  const allCities = codes
+    .map((code) => data[code])
+    .filter((c) => c.cities && c.cities.length)
+    .map((c) => c.cities.map((city) => ({ name: city, country: c.name })))
+    .flat();
 
-    // use geocoder to get coordinates for new cities
-    const newCitiesPromise = allCities
-      .filter(c => !prevCities.hasOwnProperty(cityKey(c)))
-      .map(c => {
-        return httpsGet(
-          `https://nominatim.openstreetmap.org/search?q=${c.name},%20${c.country}&format=json`,
-          {
-            headers: {
-              'User-Agent': 'my travels generator'
-            }
-          }
-        )
-          .then(buf => JSON.parse(buf))
-          .then(json => {
-            const res = json.filter(item =>
-              ['city', 'town', 'administrative'].includes(item.type)
-            );
-            if (!res.length) {
-              console.log(`not found for ${c.name}, json:`);
-              console.log(json);
-              throw 'stop';
-            }
-            return res[0];
-          })
-          .then(json => {
-            c.coordinates = [json.lon, json.lat];
-            return c;
-          });
-      });
+  const prevCities = prevCitiesGeoJSON.reduce((acc, f) => {
+    const c = f.properties;
+    acc[cityKey(c)] = f.geometry.coordinates;
+    return acc;
+  }, {});
 
-    return Promise.all(newCitiesPromise).then(newCities => {
-      return oldCities.concat(newCities);
+  // get coordinates from previous geojson
+  const oldCities = allCities
+    .filter((c) => prevCities.hasOwnProperty(cityKey(c)))
+    .map((c) => {
+      c.coordinates = prevCities[cityKey(c)];
+      return c;
     });
-  })
-  .then(cities => {
-    return cities.map(c => ({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [+c.coordinates[0], +c.coordinates[1]]
-      },
-      properties: {
-        name: c.name,
-        country: c.country
+
+  // use geocoder to get coordinates for new cities
+  const newCities = allCities.filter(
+    (c) => !prevCities.hasOwnProperty(cityKey(c))
+  );
+
+  // do sequential api calls to avoid 429 Too Many Requests
+  for (const c of newCities) {
+    const resp = await httpsGet(
+      `https://nominatim.openstreetmap.org/search?q=${c.name},%20${c.country}&format=json`,
+      {
+        headers: {
+          'User-Agent': 'my travels generator',
+        },
       }
-    }));
-  })
-  .then(geojson => fsPromises.writeFile(citiesFile, JSON.stringify(geojson)))
-  .then(() => console.log('cities.geojson generated'));
+    );
+    const json = JSON.parse(resp);
+    const items = json.filter((item) =>
+      ['city', 'town', 'administrative'].includes(item.type)
+    );
+    if (!items.length) {
+      console.log(`not found for ${c.name}, json:`);
+      console.log(json);
+      throw 'stop';
+    }
+    const item = items[0];
+
+    c.coordinates = [item.lon, item.lat];
+  }
+
+  const cities = oldCities.concat(newCities);
+  const geojson = cities.map((c) => ({
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [+c.coordinates[0], +c.coordinates[1]],
+    },
+    properties: {
+      name: c.name,
+      country: c.country,
+    },
+  }));
+
+  await fsPromises.writeFile(citiesFile, JSON.stringify(geojson));
+  console.log('cities.geojson generated');
+}
+
+generateCountriesGeoJson();
+generateCitiesGeoJson();
 
 function httpsGet(url, options) {
   return new Promise((resolve, reject) => {
     https
-      .get(url, options || {}, res => {
+      .get(url, options || {}, (res) => {
         if (res.statusCode !== 200) {
           return reject(`incorrect status code: ${res.statusCode}`);
         }
 
         let rawData = '';
-        res.on('data', d => {
+        res.on('data', (d) => {
           rawData += d;
         });
         res.on('end', () => {
           return resolve(rawData);
         });
       })
-      .on('error', e => {
+      .on('error', (e) => {
         return reject(e);
       });
   });
@@ -145,7 +146,7 @@ function httpsGet(url, options) {
 const parse = (() => {
   function parse(t, coordinatePrecision, extrasPrecision) {
     function point(p) {
-      return p.map(function(e, index) {
+      return p.map(function (e, index) {
         if (index < 2) {
           return 1 * e.toFixed(coordinatePrecision);
         } else {
