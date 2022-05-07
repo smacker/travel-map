@@ -93,5 +93,11 @@
   },
   "PL": { "name": "Poland" },
   "HU": { "name": "Hungary" },
-  "BG": { "name": "Bulgaria" }
+  "BG": { "name": "Bulgaria" },
+  "MY": { "name": "Malaysia", "years": [2022], "cities": ["Johor Bahru"] },
+  "LK": {
+    "name": "Sri Lanka",
+    "years": [2022],
+    "cities": ["Colombo", "Kandy", "Nuwara Eliya"]
+  }
 }
