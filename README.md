@@ -1,6 +1,6 @@
-# Travels map
+# Travel map
 
-Generate your interactive travels map.
+Generate your interactive travel map.
 
 Features:
 
@@ -13,7 +13,7 @@ Features:
 1. Modify `data.json` to reflect your travels
 2. Run geojson generator: `node generate.js`
 3. Run http server in `dist` directory `cd dist; python3 -m http.server`
-4. Enjoy personalized travels map on http://127.0.0.1:8000/
+4. Enjoy a personalized travel map at http://127.0.0.1:8000/
 
 ### Credits
 

@@ -81,7 +81,7 @@ async function generateCitiesGeoJson() {
       `https://nominatim.openstreetmap.org/search?q=${c.name},%20${c.country}&format=json`,
       {
         headers: {
-          'User-Agent': 'my travels generator',
+          'User-Agent': 'my travel generator',
         },
       }
     );
