@@ -104,5 +104,10 @@
     "name": "Sri Lanka",
     "years": [2022],
     "cities": ["Colombo", "Kandy", "Nuwara Eliya"]
+  },
+  "ID": {
+    "name": "Indonesia",
+    "years": [2023],
+    "cities": ["Ubud"]
   }
 }
