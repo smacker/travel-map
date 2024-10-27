@@ -3,6 +3,7 @@
     "name": "Russia",
     "birth": true,
     "lived": [1990, 2015],
+    "years": [2017, 2019, 2023, 2024],
     "cities": [
       "Yekaterinburg",
       "Moscow",
@@ -14,7 +15,7 @@
   },
   "VN": {
     "name": "Vietnam",
-    "years": [2022],
+    "years": [2022, 2024],
     "lived": [2015, 2017],
     "cities": [
       "Ho Chi Minh",
@@ -109,5 +110,15 @@
     "name": "Indonesia",
     "years": [2023],
     "cities": ["Ubud"]
+  },
+  "JP": {
+    "name": "Japan",
+    "years": [2024],
+    "cities": ["Tokyo"]
+  },
+  "CN": {
+    "name": "China",
+    "years": [2024],
+    "cities": ["Beijing"]
   }
 }
