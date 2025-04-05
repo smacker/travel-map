@@ -113,12 +113,17 @@
   },
   "JP": {
     "name": "Japan",
-    "years": [2024],
+    "years": [2024, 2025],
     "cities": ["Tokyo"]
   },
   "CN": {
     "name": "China",
     "years": [2024],
     "cities": ["Beijing"]
+  },
+  "KR": {
+    "name": "South Korea",
+    "years": [2025],
+    "cities": ["Busan"]
   }
 }
